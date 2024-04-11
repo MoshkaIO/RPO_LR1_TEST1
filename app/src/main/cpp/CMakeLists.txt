@@ -30,15 +30,28 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
 
 
 add_library(spdlog STATIC IMPORTED)
+
+
+
+
+add_library(mbedcrypto SHARED IMPORTED)  #################
+set_target_properties(mbedcrypto PROPERTIES IMPORTED_LOCATION  #################
+#        C:/Users/19657/AndroidStudioProjects/libs/mbedtls/build/x86/library/libmbedcrypto.a)  #################
+        ${CMAKE_CURRENT_SOURCE_DIR}/../nativeLibs/${ANDROID_ABI}/libmbedcrypto.so)
+
+
+
 set_target_properties(spdlog PROPERTIES IMPORTED_LOCATION
         C:/Users/19657/AndroidStudioProjects/libs/spdlog/build/x86/libspdlog.a)
 
 target_include_directories(rpo_lr1_test1 PUBLIC
-        C:/Users/19657/AndroidStudioProjects/libs/spdlog/spdlog/include)
+        C:/Users/19657/AndroidStudioProjects/libs/spdlog/spdlog/include
+        C:/Users/19657/AndroidStudioProjects/libs/mbedtls/mbedtls/include) #################
 
 target_link_libraries( # Specifies the target library.
         rpo_lr1_test1
         spdlog
+        mbedcrypto
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib} )
