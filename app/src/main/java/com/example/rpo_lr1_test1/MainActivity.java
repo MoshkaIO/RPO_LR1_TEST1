@@ -4,6 +4,7 @@ package com.example.rpo_lr1_test1;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,10 +16,16 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rpo_lr1_test1.databinding.ActivityMainBinding;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.IOUtils;
 
 import org.apache.commons.codec.binary.Hex;
+//import org.apache.commons.io.IOUtils;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
+
 
 
 
@@ -66,11 +73,14 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         int res = initRng();
+
+        ////////////////////////////////////////////////////////////////////////
         byte[] v = randomBytes(10);
+
+        ///////////////////////////////////////////////////////////////////////
         // Example of a call to a native method
         TextView tv = binding.sampleText;
         String NewStr = stringFromJNI();
-        //CONSOS("100-7"); //ради хайпа
         String a= Arrays.toString(v);
         String ar[]=a.substring(1,a.length()-1).split(", ");
         NewStr=NewStr+" ||rand: "+Arrays.toString(ar)+" \n ";
@@ -90,22 +100,9 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
         bar=b.substring(1,b.length()-1).split(", ");
         NewStr=NewStr+" ||decr: "+Arrays.toString(bar)+" \n ";
 //        tv.setText(stringFromJNI());
-        //tv.setText(NewStr);
+        tv.setText(NewStr);
         Toast.makeText(this, NewStr, Toast.LENGTH_LONG).show();
-        //Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
-//        activityResultLauncher  = registerForActivityResult(
-//                new ActivityResultContracts.StartActivityForResult(),
-//                new ActivityResultCallback() {
-//                    @Override
-//                    public void onActivityResult(ActiviXtyResult result) {
-//                        if (result.getResultCode() == Activity.RESULT_OK) {
-//                            Intent data = result.getData();
-//                            // обработка результата
-//                            String pin = data.getStringExtra("pin");
-//                            Toast.makeText(MainActivity.this, pin, Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
+
         ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -143,21 +140,32 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
         byte[] enc = encrypt(key, stringToHex("000000000000000102"));
         byte[] dec = decrypt(key, enc);
         String s = new String(Hex.encodeHex(dec)).toUpperCase();
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
 //        Intent it = new Intent(this, PinpadActivity.class);
 //        startActivity(it);
         new Thread(()-> {
             try {
-//                byte[] trd = stringToHex("9F0206000000000100");
+//                HttpURLConnection uc = (HttpURLConnection)
+//                        (new URL("https://ru.wikipedia.org/").openConnection());
+//                HttpURLConnection uc = (HttpURLConnection)
+//                        (new URL("http://10.0.2.2:8081/api/v1/title").openConnection());
+                HttpURLConnection uc = (HttpURLConnection)
+                        (new URL("http://192.168.43.111:8081/api/v1/title").openConnection());
+                InputStream inputStream = uc.getInputStream();
+                String html = IOUtils.toString(inputStream);
+                String title = getPageTitle(html);
+//                byte[] trd = stringToHex("9F0206000000000100"); //pinpad load
 //                boolean ok = transaction(trd);
-//                runOnUiThread(()-> {
-//                    Toast.makeText(MainActivity.this, ok ? "ok" : "failed", Toast.LENGTH_SHORT).show();
-//                });
-                byte[] trd = stringToHex("9F0206000000000100");
-                transaction(trd);
+                runOnUiThread(()-> {
+                    //Toast.makeText(MainActivity.this, ok ? "ok" : "failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, title, Toast.LENGTH_LONG).show();
+                });
+//                byte[] trd = stringToHex("9F0206000000000m");
+//                transaction(trd);
 
             } catch (Exception ex) {
                 // todo: log error
+                Log.e("fapptag","HTTP CLIENT FAILS", ex);
             }
         }).start();
         //Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
@@ -176,6 +184,41 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
         }
         return hex;
     }
+    protected void testHttpClient()
+    {
+        new Thread(() -> {
+            try {
+                HttpURLConnection uc = (HttpURLConnection)
+                        (new URL("https://www.wikipedia.org").openConnection());
+                InputStream inputStream = uc.getInputStream();
+                String html = IOUtils.toString(inputStream);
+                String title = getPageTitle(html);
+                runOnUiThread(() ->
+                {
+                    Toast.makeText(this, title, Toast.LENGTH_LONG).show();
+                });
+
+            } catch (Exception ex) {
+                Log.e("fapptag", "Http client fails", ex);
+            }
+        }).start();
+    }
+
+//    private String getPageTitle(String html) {
+//        return "";
+//    }
+protected String getPageTitle(String html)
+{
+    int pos = html.indexOf("<title");
+    String p="not found";
+    if (pos >= 0)
+    {
+        int pos2 = html.indexOf("<", pos + 1);
+        if (pos >= 0)
+            p = html.substring(pos + 7, pos2);
+    }
+    return p;
+}
 
     /**
      * A native method that is implemented by the 'rpo_lr1_test1' native library,

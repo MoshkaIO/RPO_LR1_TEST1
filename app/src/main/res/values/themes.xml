@@ -11,12 +11,12 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Customize your theme here. #16a085 -->
     </style>
     <style name="PadButton">
         <item name="android:textColor" >#ecf0f1</item>
         <item name="android:layout_marginRight" >5dp</item>
         <item name="android:layout_marginLeft" >5dp</item>
-        <item name="android:backgroundTint" >#16a085</item>
+        <item name="android:backgroundTint" >#288ba8</item>
     </style>
 </resources>

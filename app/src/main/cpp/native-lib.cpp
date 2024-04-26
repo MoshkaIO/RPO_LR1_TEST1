@@ -30,37 +30,7 @@ Java_com_example_rpo_1lr1_1test1_MainActivity_stringFromJNI(
 }
 
 
-//JNICALL
-//Java_com_example_rpo_1lr1_1test1_MainActivity_CONSOS(
-//        JNIEnv *env,
-//jobject /* this */) {
-//std::string hello = "Hello from C++";
-//LOG_INFO("Hello from c++ %d", 2023);
-//SLOG_INFO("Hello from spdlog {0}", 2023);
-//return env->NewStringUTF(hello.c_str());
-//}
 
-
-
-//extern "C" JNIEXPORT jint JNICALL
-//Java_ru_iu3_fclient_MainActivity_initRng(JNIEnv *env, jclass clazz) {
-//    mbedtls_entropy_init( &entropy );
-//    mbedtls_ctr_drbg_init( &ctr_drbg );
-//
-//    return mbedtls_ctr_drbg_seed( &ctr_drbg , mbedtls_entropy_func, &entropy,
-//                                  (const unsigned char *) personalization,
-//                                  strlen( personalization ) );
-//}
-//
-//extern "C" JNIEXPORT jbyteArray JNICALL
-//Java_ru_iu3_fclient_MainActivity_randomBytes(JNIEnv *env, jclass, jint no) {
-//    uint8_t * buf = new uint8_t [no];
-//    mbedtls_ctr_drbg_random(&ctr_drbg, buf, no);
-//    jbyteArray rnd = env->NewByteArray(no);
-//    env->SetByteArrayRegion(rnd, 0, no, (jbyte *)buf);
-//    delete[] buf;
-//    return rnd;
-//}
 
 
 
@@ -156,12 +126,15 @@ Java_com_example_rpo_1lr1_1test1_MainActivity_decrypt(JNIEnv *env, jclass, jbyte
     env->ReleaseByteArrayElements(data, pdata, 0);
     return dout;
 }
+
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_rpo_1lr1_1test1_MainActivity_CONSOS(JNIEnv *env, jobject thiz, jstring s) {
     // TODO: implement CONSOS()
     LOG_INFO("New console inf: %s", s);
     SLOG_INFO("Hello from spdlog {0}", 1007);
+    return env->NewStringUTF("xxxxxxx");
 }
 
 
