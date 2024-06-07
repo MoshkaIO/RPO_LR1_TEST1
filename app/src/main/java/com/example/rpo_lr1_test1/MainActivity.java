@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
         bar=b.substring(1,b.length()-1).split(", ");
         NewStr=NewStr+" ||decr: "+Arrays.toString(bar)+" \n ";
 //        tv.setText(stringFromJNI());
-        tv.setText(NewStr);
+//        tv.setText(NewStr);
         Toast.makeText(this, NewStr, Toast.LENGTH_LONG).show();
 
         ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -134,34 +134,29 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
                 });
 
     }
-    public void onButtonClick(View v)
+
+    public void onButtonClick2(View v)
     {
-        byte[] key = stringToHex("0123456789ABCDEF0123456789ABCDE0");
-        byte[] enc = encrypt(key, stringToHex("000000000000000102"));
-        byte[] dec = decrypt(key, enc);
-        String s = new String(Hex.encodeHex(dec)).toUpperCase();
-//        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-//        Intent it = new Intent(this, PinpadActivity.class);
-//        startActivity(it);
+
         new Thread(()-> {
             try {
-//                HttpURLConnection uc = (HttpURLConnection)
-//                        (new URL("https://ru.wikipedia.org/").openConnection());
-//                HttpURLConnection uc = (HttpURLConnection)
-//                        (new URL("http://10.0.2.2:8081/api/v1/title").openConnection());
+
+
+
+
                 HttpURLConnection uc = (HttpURLConnection)
                         (new URL("http://192.168.43.111:8081/api/v1/title").openConnection());
                 InputStream inputStream = uc.getInputStream();
                 String html = IOUtils.toString(inputStream);
                 String title = getPageTitle(html);
-//                byte[] trd = stringToHex("9F0206000000000100"); //pinpad load
-//                boolean ok = transaction(trd);
+
+
+
                 runOnUiThread(()-> {
-                    //Toast.makeText(MainActivity.this, ok ? "ok" : "failed", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, ok ? "ok" : "failed", Toast.LENGTH_SHORT).show();
                     Toast.makeText(this, title, Toast.LENGTH_LONG).show();
                 });
-//                byte[] trd = stringToHex("9F0206000000000m");
-//                transaction(trd);
+
 
             } catch (Exception ex) {
                 // todo: log error
@@ -184,25 +179,7 @@ public class MainActivity extends AppCompatActivity implements TransactionEvents
         }
         return hex;
     }
-    protected void testHttpClient()
-    {
-        new Thread(() -> {
-            try {
-                HttpURLConnection uc = (HttpURLConnection)
-                        (new URL("https://www.wikipedia.org").openConnection());
-                InputStream inputStream = uc.getInputStream();
-                String html = IOUtils.toString(inputStream);
-                String title = getPageTitle(html);
-                runOnUiThread(() ->
-                {
-                    Toast.makeText(this, title, Toast.LENGTH_LONG).show();
-                });
-
-            } catch (Exception ex) {
-                Log.e("fapptag", "Http client fails", ex);
-            }
-        }).start();
-    }
+//
 
 //    private String getPageTitle(String html) {
 //        return "";
